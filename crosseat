@@ -205,14 +205,14 @@ go_left() {
 
 if [ ${konum} -eq ${price11}  ]
 then
-	echo aptın $fiyat11 puanı $user_name.
+	echo Kaptın $fiyat11 puanı $user_name.
 	skor=`echo $skor+$fiyat11 | bc`
 	seviye_plus
 else
 	echo 
 fi 2>/dev/null
 echo $skor | figlet
-
+echo Kalan: $kalan
 }
 
 ## Sağa hareket
