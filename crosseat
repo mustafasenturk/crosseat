@@ -1,0 +1,287 @@
+#!/bin/sh
+#Bu script GPL3 ile özgürce kullanılabilir.
+#Terminalde sabit genişlikte yazı karakterleri kullanmanız tavsiye edilir.
+#CrossEat, Yukarıdan gelen puanları çapraz yiyerek oynayabileceğiniz metin tabanlı bir oyundur.
+#Karakter seçimi ve zorluk seviyesi gibi ayarlar için ayarlar.conf dosyasına bakabilirsiniz.
+
+## Başlangıç ayarları
+clear
+source ./ayarlar.conf
+
+go_reset() {
+declare -ig skor=0
+genislik=`tput cols`
+konum=`echo $genislik/2 | bc`
+
+echo "================================================================"
+echo CROSSEAT | figlet
+echo "================================================================"
+echo İLK 10
+cat ./score | tail | sort -nr
+echo "================================================================"
+read -p "Bir isim yaz: " user_name
+clear
+echo "================================================================"
+echo Sayıları çapraz ye, puanları topla!
+echo a: sol
+echo d: sağ
+echo q: çıkış
+echo t: tüm veriler
+echo "================================================================"
+echo Yükleniyor...
+sleep 2
+
+
+declare -Ag onuncu_satir2
+declare -a taban
+for a in `seq ${genislik}`
+do
+	taban[a]=${zemin}
+done
+taban[$orta]=${karakter}
+echo ${taban[@]} | tr -d ' '
+
+declare -a birinci_satir
+for a in `seq ${genislik}`
+do
+	birinci_satir[a]='-'
+done
+
+declare -a ikinci_satir
+for a in `seq ${genislik}`
+do
+	ikinci_satir[a]='-'
+done
+
+declare -a ucuncu_satir
+for a in `seq ${genislik}`
+do
+	ucuncu_satir[a]='-'
+done
+
+declare -a dorduncu_satir
+for a in `seq ${genislik}`
+do
+	dorduncu_satir[a]='-'
+done
+
+declare -a besinci_satir
+for a in `seq ${genislik}`
+do
+	besinci_satir[a]='-'
+done
+
+declare -a altinci_satir
+for a in `seq ${genislik}`
+do
+	altinci_satir[a]='-'
+done
+
+
+declare -a yedinci_satir
+for a in `seq ${genislik}`
+do
+	yedinci_satir[a]='-'
+done
+
+declare -a sekizinci_satir
+for a in `seq ${genislik}`
+do
+	sekizinci_satir[a]='-'
+done
+
+declare -a dokuzuncu_satir
+for a in `seq ${genislik}`
+do
+	dokuzuncu_satir[a]='-'
+done
+
+declare -a onuncu_satir
+for a in `seq ${genislik}`
+do
+	onuncu_satir[a]='-'
+done
+clear
+}
+
+## Hedefler
+
+hedef() {
+	gen=`echo $genislik - 10 | bc`
+	aralik=`echo $genislik / 3 | bc`
+price=`echo $aralik + $RANDOM % ${seviye} | bc`
+fiyat=`echo $RANDOM % 10 | bc`
+birinci_satir[$price]=$fiyat
+
+}
+
+
+## Yükseklik
+yukssek() {
+	
+	echo ${birinci_satir[@]} | tr -d ' '
+	echo ${ikinci_satir[@]} | tr -d ' '
+	echo ${ucuncu_satir[@]} | tr -d ' '
+	echo ${dorduncu_satir[@]} | tr -d ' '
+	echo ${besinci_satir[@]} | tr -d ' '
+	echo ${altinci_satir[@]} | tr -d ' '
+	echo ${yedinci_satir[@]} | tr -d ' '
+	echo ${sekizinci_satir[@]} | tr -d ' '
+	echo ${dokuzuncu_satir[@]} | tr -d ' '
+	echo ${onuncu_satir[@]} | tr -d ' '
+}
+
+## Değerleri kaydır
+kaydir() {
+
+for a in `seq ${genislik}`
+do
+	onuncu_satir[a]=''
+done
+
+onuncu_satir=${dokuzuncu_satir[@]}; mapfile onuncu_satir<<<$onuncu_satir
+dokuzuncu_satir=${sekizinci_satir[@]}; mapfile dokuzuncu_satir<<<$dokuzuncu_satir
+sekizinci_satir=${yedinci_satir[@]}; mapfile sekizinci_satir<<<$sekizinci_satir
+yedinci_satir=${altinci_satir[@]}; mapfile yedinci_satir<<<$yedinci_satir
+altinci_satir=${besinci_satir[@]}; mapfile altinci_satir<<<$altinci_satir
+besinci_satir=${dorduncu_satir[@]}; mapfile besinci_satir<<<$besinci_satir
+dorduncu_satir=${ucuncu_satir[@]}; mapfile dorduncu_satir<<<$dorduncu_satir
+ucuncu_satir=${ikinci_satir[@]}; mapfile ucuncu_satir<<<$ucuncu_satir
+ikinci_satir=${birinci_satir[@]}; mapfile ikinci_satir<<<$ikinci_satir
+
+## Ödülleri yakalama
+price11=$price10; fiyat11=$fiyat10
+price10=$price9; fiyat10=$fiyat9
+price9=$price8; fiyat9=$fiyat8
+price8=$price7; fiyat8=$fiyat7
+price7=$price6; fiyat7=$fiyat6
+price6=$price5; fiyat6=$fiyat5
+price5=$price4; fiyat5=$fiyat4
+price4=$price3; fiyat4=$fiyat3
+price3=$price2; fiyat3=$fiyat2
+price2=$price1; fiyat2=$fiyat1
+price1=$price; fiyat1=$fiyat
+
+
+######
+genislik=`tput cols`
+for a in `seq ${genislik}`
+do
+	birinci_satir[a]='-'
+done
+hedef
+}
+seviye_plus(){
+	seviye=`echo ${seviye}+1 | bc`
+	if [ ${seviye} -gt ${final} ]
+	then
+		go_quit
+	fi
+	kalan=`echo ${final}-${seviye} | bc`
+}
+go_quit(){
+	clear
+	echo $skor $user_name >> score
+	echo "$user_name    $skor" | figlet
+	cat ./score | tail | sort -nr
+	sleep 3
+	exit 0
+}
+
+## Sola hareket
+go_left() {
+	clear
+	yukssek
+	kaydir
+	konum=`echo $konum-1 | bc`
+	for a in `seq ${genislik}`
+	do
+		taban[a]=${zemin}
+	done
+	taban[$konum]=${karakter}
+	echo ${taban[@]} | tr -d ' '
+ 	on=`echo ${onuncu_satir[*]} | tr -d - | bc`
+	genislik=`tput cols`
+	echo Kalan: $kalan
+
+if [ ${konum} -eq ${price11}  ]
+then
+	echo aptın $fiyat11 puanı $user_name.
+	skor=`echo $skor+$fiyat11 | bc`
+	seviye_plus
+else
+	echo 
+fi 2>/dev/null
+echo $skor | figlet
+
+}
+
+## Sağa hareket
+go_right() {
+	clear
+	yukssek
+	kaydir
+	konum=`echo $konum+1 | bc`
+	for a in `seq ${genislik}`
+	do
+		taban[a]=${zemin}
+	done
+	taban[$konum]=${karakter}
+	echo ${taban[@]} | tr -d ' '
+ 	on=`echo ${onuncu_satir[*]} | tr -d - | bc`
+	genislik=`tput cols`
+	echo Kalan: $kalan
+if [ ${konum} -eq ${price11} ]
+then
+	echo Kaptın $fiyat11 puanı $user_name.
+	skor=`echo $skor+$fiyat11 | bc`
+	seviye_plus
+else
+	echo
+fi 2>/dev/null
+
+echo $skor | figlet
+}
+go_reset
+
+debug() {
+	echo Karakter: $karakter
+	echo Karakter konumu: $konum
+	echo Zemin: $zemin
+	echo Seviye: $seviye
+	echo Dolgu: "-"
+	echo Final: $final
+	echo Kalan adım sayısı: $kalan
+	echo "---------------------------------"
+	cat ./score | tail | sort -nr
+	
+}
+## Tuşların okunması
+while true
+do
+	read -sn 1 key
+	case $key in
+	a)
+		go_left
+	;;
+	d)
+		go_right
+	;;
+	q)
+		
+		go_quit
+	;;
+	r)
+		go_reset
+		yukssek
+		kaydir
+	;;
+	t)
+		debug
+	esac
+
+	echo -n $key
+	#sleep 0.1
+done
+yukssek
+
