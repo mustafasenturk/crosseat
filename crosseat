@@ -202,7 +202,6 @@ go_left() {
 	echo ${taban[@]} | tr -d ' '
  	on=`echo ${onuncu_satir[*]} | tr -d - | bc`
 	genislik=`tput cols`
-	echo Kalan: $kalan
 
 if [ ${konum} -eq ${price11}  ]
 then
@@ -230,7 +229,6 @@ go_right() {
 	echo ${taban[@]} | tr -d ' '
  	on=`echo ${onuncu_satir[*]} | tr -d - | bc`
 	genislik=`tput cols`
-	echo Kalan: $kalan
 if [ ${konum} -eq ${price11} ]
 then
 	echo Kaptın $fiyat11 puanı $user_name.
@@ -241,6 +239,7 @@ else
 fi 2>/dev/null
 
 echo $skor | figlet
+echo Kalan: $kalan
 }
 go_reset
 
