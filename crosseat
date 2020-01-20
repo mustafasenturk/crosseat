@@ -14,7 +14,7 @@ genislik=`tput cols`
 konum=`echo $genislik/2 | bc`
 
 echo "================================================================"
-echo CROSSEAT | figlet
+echo CROSSEAT | figlet 2>/dev/null || echo CROSSEAT
 echo "================================================================"
 echo İLK 10
 cat ./score | tail | sort -nr
@@ -182,7 +182,7 @@ seviye_plus(){
 go_quit(){
 	clear
 	echo $skor $user_name >> score
-	echo "$user_name    $skor" | figlet
+	echo "$user_name    $skor" | figlet 2>/dev/null || echo "$user_name    $skor"
 	cat ./score | tail | sort -nr
 	sleep 3
 	exit 0
@@ -211,7 +211,7 @@ then
 else
 	echo 
 fi 2>/dev/null
-echo $skor | figlet
+echo $skor | figlet 2>/dev/null || echo $skor
 echo Kalan: $kalan
 }
 
@@ -238,7 +238,7 @@ else
 	echo
 fi 2>/dev/null
 
-echo $skor | figlet
+echo $skor | figlet 2>/dev/null || echo $skor
 echo Kalan: $kalan
 }
 go_reset
